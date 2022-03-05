@@ -66,8 +66,14 @@ class Job(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_CREATE)
+    
+    pickup_address = models.CharField(max_length=256)
+    pickup_name = models.CharField(max_length=255)
     pickup_lat = models.FloatField(blank=True, null=True)
     pickup_lng = models.FloatField(blank=True, null=True)
+    pickup_phone = models.CharField(max_length=20)
+    
+    
     drop_lat = models.FloatField(blank=True, null=True)
     drop_lng = models.FloatField(blank=True, null=True)
     

@@ -8,7 +8,7 @@ from django.contrib.auth import update_session_auth_hash
 from core.models import Customer, Job
 
 
-from .forms import UserModifyForm, CustomerModifyForm, JobCreateStep1
+from .forms import JobCreateStep2, UserModifyForm, CustomerModifyForm, JobCreateStep1
 
 import firebase_admin
 from firebase_admin import credentials, auth
@@ -129,13 +129,20 @@ def create_job(request):
         redirect("customer:payment_method")
     customer = Customer.objects.get(user=request.user)
     current_job = Job.objects.filter(customer=customer).last()
+    
+    if current_job == None:
+        current_step = 1
+    else:
+        current_step = ["creating", "pickup", "droping", "payment"].index(current_job.status) + 1
+    
+    
     job_create_step1 = JobCreateStep1(instance=current_job)
+    job_create_step2 = JobCreateStep2(instance=current_job)
 
     if request.method == "POST":
-        action = request.POST.get("action")
+        step = request.POST.get("step")
 
-        if action == 'step1':
-            print(request)
+        if step == 'step1':
             if current_job:
                 step1_form = JobCreateStep1(request.POST, request.FILES, instance=current_job)
             else:
@@ -145,17 +152,30 @@ def create_job(request):
                 job.customer = customer
                 job.status = 'pickup'
                 job.save()
-                print("SUCCES")
                 return redirect(reverse("customer:create_job"))
             else:
-                print("FAIL")
                 job_create_step1=JobCreateStep1(request.POST)
                 return render(request, "customer/create_job.html", {
-                     "step1_form": job_create_step1
+                "step1_form": job_create_step1
             })
+        
+        if step == "step2":
+            print(request.POST)
+            step2_form  = JobCreateStep2(request.POST, instance=current_job)
+            
+            if(step2_form.is_valid()):
+                job = step2_form.save(commit=False)
+                job.status='droping'
+                job.save()
+                return redirect(reverse("customer:create_job"))
+            else:
+                print("invalid")
+                job_create_step2 = JobCreateStep2(request.POST)
     
 
     return render(request, "customer/create_job.html", {
         "step1_form": job_create_step1,
-        "job": current_job
+        "step2_form": job_create_step2,
+        "job": current_job,
+        "current_step": current_step
     })
