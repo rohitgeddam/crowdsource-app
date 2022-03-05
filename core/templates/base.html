@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <!-- Compiled and minified CSS -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+      
+    </script>
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="black">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="" style="font-size: 24px; font-weight: 900;">Fast Parcel</a>
+                    {% if request.user.is_authenticated %}
+                       <ul id="nav-mobile" class="right">
+                        <!-- Dropdown Trigger -->
+                        Welcome, {{user.get_full_name}}
+                        <a class='black dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">person</i></a>
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown1' class='dropdown-content white white-text'>
+                          <li><a href="#!">Profile</a></li>
+                          <li class="divider" tabindex="-1"></li>
+                          <li><a href="/sign-out/">Sign Out</a></li>
+                        
+                        </ul>
+                      </ul>
+                    {% else %}
+                     <ul id="nav-mobile" class="right">
+                        <li><a href="/sign-in/?next=/customer/">Customer</a></li>
+                        <li><a href="/sign-in/?next=/courier/">Courier</a></li>
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <main class="container" style="height: 100vh;">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+
+
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+        <script>
+          $('.dropdown-trigger').dropdown();
+
+          {% if messages %}
+              {% for message in messages %}
+                  {% if message.tags %}
+                      {% if message.tags == 'success' %}
+                          M.toast({html: '{{message}}', inDuration: 300, outDuration: 375, length: 2000, classes: 'green accent-4'})
+                      {% endif %}
+                       {% if message.tags == 'warning' or message.tags == "info"%}
+                          M.toast({html: '{{message}}', inDuration: 300, outDuration: 375, length: 2000, classes: 'black'})
+                      {% endif %}
+                       {% if message.tags == 'error' %}
+                          M.toast({html: '{{message}}', inDuration: 300, outDuration: 375, length: 2000, classes: 'red'})
+                      {% endif %}
+                  {% else %}
+                      M.toast({html: '{{message}}', inDuration: 300, outDuration: 375, length: 2000, classes: 'black'})
+                  {% endif %}
+
+              {% endfor %}
+          {% endif %}
+        </script>
+
+    {% block scripts %}
+    {% endblock %}
+
+    </body>
+</html>

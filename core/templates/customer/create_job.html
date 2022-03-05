@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block head %}
+<script 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANYhckKG7-0AcKmSB_Xc1MYWN-X6rVTEg&libraries=places&callback=initMap" async>
+</script>
+{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="row" style="margin-top: 16px;">
+
+        <div class="col s12 l3">
+            <h5>Order Details</h5>
+            <div class="card">
+                <div class="card-content">
+                    <p>Job Details will go here.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-content">
+                    <p>Job Details will go here.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col s12 l9">
+           <div class="card">
+               <ul class="tabs">
+                   <li class="tab col s3"><a href="#details" class="{% if not job %}active{% endif %}">Job Details</a></li>
+                   <li class="tab col s3"><a class="{% if job.status == 'pickup' %}active{% endif %}" href="#pickup">Pick Up Details</a></li>
+                   <li class="tab col s3"><a class="{% if job.status == 'droping' %}active{% endif %}" href="#drop">Drop Off Details</a></li>
+                   <li class="tab col s3"><a class="{% if job.status == 'payment' %}active{% endif %}" href="#payment">Payment</a></li>
+               </ul>
+           </div>
+            <div class="card-content">
+                <div id="details" class="col s12">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{step1_form|crispy}}
+                        <input type="hidden" value="step1" name="action">
+                        <input type="submit" value="Next" class="btn">
+                    </form>
+                </div>
+                <div id="pickup" class="col s12">
+                    Pickup Details
+                    <input type="text" id="pickup_autocomplete"/>
+                </div>
+                <div id="drop" class="col s12">Drop Details</div>
+                <div id="payment" class="col s12">Payment Details</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        console.log("hello world");
+        $(document).ready(function(){
+            $('.tabs').tabs();
+        });
+    </script>
+    <script>
+      $(document).ready(function(){
+        $('select').formSelect();
+      });
+    </script>
+
+    
+
+    <script>
+        const pickup_autocomplete_input = document.getElementById("pickup_autocomplete")
+        const autocomplete = new google.maps.places.Autocomplete(pickup_autocomplete_input);
+    </script>
+{% endblock %}

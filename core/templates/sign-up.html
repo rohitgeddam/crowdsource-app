@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+
+    <div class="row" id="signup-page">
+        
+        <div class="col s12 xl6 offset-xl3">
+            <form class="" method="POST" action="{% url 'sign-up' %}">
+                {% csrf_token %}
+                {{form.as_p}}
+                <input type="submit" value="Sign Up" class="btn col s12 black text-white"/>
+            </form>
+            <div class="row">
+              <a href="/sign-in/?next={{request.GET.next}}" class="col s12">Already have an Fast Parcel account. Sign In!</a>
+          </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block title %}
+    Customer Home
+{% endblock %}
+
+{% block content %}
+
+{% url "customer:profile" as profile %}
+{% url "customer:payment_method" as payment_method %}
+{% url "customer:create_job" as create_job %}
+
+
+   <div class="row" style="margin: 1.5rem 0px;">
+
+      <div class="col s12 l4 grey lighten-5 center-align" style="padding: 1.5rem; margin-right: 1.5rem; ">
+
+          <div class="">
+              <img src="{% if user.customer.avatar %}{{ user.customer.avatar.url }}{% else %}{% static 'img/avatar.png' %}{% endif %}" class="circle responsive-img" style="width: 150px; height: 150px;"/>
+              <h4>{{ user.get_full_name }}</h4>
+              <h5>{{ user.email }}</h5>
+          </div>
+
+           <div class="collection left-align"  style="margin-top: 2rem;">
+            <a href="{% url 'customer:create_job' %}" class="collection-item {% if request.path == create_job %}active{% endif %}">Create a Job</a>
+            <a href="#!" class="collection-item">My Jobs</a>
+            <a href="{% url 'customer:profile' %}" class="collection-item {% if request.path == profile %}active{% endif %}">
+                Profile Information</a>
+            <a href="{% url 'customer:payment_method' %}" class="collection-item {% if request.path == payment_method %}active{% endif %}">Payment Details</a>
+          </div>
+
+
+      </div>
+
+       {% block main %}
+
+       {% endblock main %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "customer/home.html" %}
+
+{% block head %}
+    {% if not user.customer.stripe_payment_method_id %}
+        <script src="https://js.stripe.com/v3/"></script>
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col s12 l7">
+            <h5>Your Credit/Debit Card</h5>
+            <div class="card">
+                <div class="card-content">
+                {% if not user.customer.stripe_payment_method_id %}
+                        <form id="payment-form" data-secret="{{ client_secret }}">
+                            <div id="payment-element">
+                                <!-- Elements will create form elements here -->
+                            </div>
+
+                            <button id="submit" class="waves-effect waves-light btn black" style="margin-top: 10px;">Add Card</button>
+                        </form>
+                {% else %}
+                        <div>
+                            <form method="POST">
+                            <input type="text" value="**** **** **** {{ request.user.customer.stripe_card_last }}" disabled/>
+                            
+                                {% csrf_token %}
+                                <button type="submit" class="btn red">
+                                    Remove Card
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not user.customer.stripe_payment_method_id  %}
+        <script>
+            console.log("hello world");
+            const stripe = Stripe("{{public_key}}");
+            const options = {
+            clientSecret: '{{client_secret}}',
+            // Fully customizable with appearance API.
+            appearance: {
+                theme: 'stripe'
+            },
+            };
+
+            // Set up Stripe.js and Elements to use in checkout form, passing the client secret obtained in step 2
+            const elements = stripe.elements(options);
+
+            // Create and mount the Payment Element
+            const paymentElement = elements.create('payment');
+            paymentElement.mount('#payment-element');
+            
+            const form = document.getElementById('payment-form');
+
+            form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const {error} = await stripe.confirmSetup({
+                //`Elements` instance that was used to create the Payment Element
+                elements,
+                redirect: "if_required",
+                confirmParams: {
+                
+                }
+            });
+
+            if (error) {
+                // This point will only be reached if there is an immediate error when
+                // confirming the payment. Show error to your customer (for example, payment
+                // details incomplete)
+                
+                M.toast({html: error, inDuration: 300, outDuration: 375, length: 2000, classes: 'red accent-4'})
+
+            } else {
+                // Your customer will be redirected to your `return_url`. For some payment
+                // methods like iDEAL, your customer will be redirected to an intermediate
+                // site first to authorize the payment, then redirected to the `return_url`.
+                M.toast({html: "Card Added Successfully", inDuration: 300, outDuration: 375, length: 2000, classes: 'green accent-4'})
+                window.location.reload();
+            }
+            });
+
+        </script>
+    {% endif %}
+
+{% endblock %}
