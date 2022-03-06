@@ -80,6 +80,18 @@ class Job(models.Model):
     drop_lng = models.FloatField(blank=True, null=True)
     drop_phone = models.CharField(max_length=20)
     
-
+    distance = models.IntegerField(default=0)
+    pricing = models.IntegerField(default=0)
+    
+    
     def __str__(self):
         return str(self.id)
+    
+class Transactions(models.Model):
+    stripe_transcation_intent_id = models.CharField(max_length=255)
+    job = models.ForeignKey(Job,on_delete=models.CASCADE)
+    amount = models.FloatField(default=0)
+    created_at = models.DateTimeField(default=timezone.now)
+    
+    def __str__(self):
+        return self.stripe_transcation_intent_id

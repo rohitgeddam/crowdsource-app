@@ -8,7 +8,7 @@
         min-height: 400px;
     }
 
-    .drop-map{
+    .drop-map {
         width: 100%;
         height: auto;
         min-height: 400px;
@@ -53,6 +53,30 @@
         </div>
         {% endif %}
 
+        {% if current_step > 3%}
+        <div class="card">
+            <div class="card-content">
+                <b>Drop Name</b>
+                <p>{{job.drop_name}}</p>
+                <b>Drop Address</b>
+                <p>{{job.drop_address}}</p>
+
+                <b>Drop Phone Number</b>
+                <p>{{job.drop_phone}}</p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-content">
+                <b>Final Price</b>
+                <p>Rs. {{job.pricing}}</p>
+            </div>
+        </div>
+        {% endif %}
+
+
+
     </div>
     <div class="col s12 l9">
         <div class="card">
@@ -75,28 +99,36 @@
         <div class="card-content">
             {% comment %} step1 {% endcomment %}
             <div id="details" class="col s12">
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %} {{step1_form|crispy}}
-                    <input type="hidden" value="step1" name="step" />
-                    <input type="submit" value="Next" class="btn" />
-                </form>
+                <div class="card">
+                    <div class="card-content">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %} {{step1_form|crispy}}
+                            <input type="hidden" value="step1" name="step" />
+                            <input type="submit" value="Next" class="btn black" />
+                        </form>
+                    </div>
+                </div>
             </div>
 
             {% comment %} step2 {% endcomment %}
             <div id="pickup" class="col s12">
-                <div class="row">
-                    <div class="col s12 m6">
-                        <form method="POST">
-                            {% csrf_token %} {{step2_form|crispy}}
-                            <input type="submit" value="Next" class="btn" />
-                            <input type="hidden" value="step2" name="step" />
-                        </form>
-                    </div>
-                    <div class="col s12 m6">
-                        <div id="pickup-map" class="pickup-map"></div>
-                        <div id="pickup-infowindow-content">
-                            <span id="pickup-place-name" class="title"></span><br />
-                            <span id="pickup-place-address"></span>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col s12 m6">
+                                <form method="POST">
+                                    {% csrf_token %} {{step2_form|crispy}}
+                                    <input type="submit" value="Next" class="btn black" />
+                                    <input type="hidden" value="step2" name="step " />
+                                </form>
+                            </div>
+                            <div class="col s12 m6">
+                                <div id="pickup-map" class="pickup-map"></div>
+                                <div id="pickup-infowindow-content">
+                                    <span id="pickup-place-name" class="title"></span><br />
+                                    <span id="pickup-place-address"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -104,20 +136,22 @@
 
             {% comment %} step3 {% endcomment %}
             <div id="drop" class="col s12">
-                <div id="drop" class="col s12">
-                    <div class="row">
-                        <div class="col s12 m6">
-                            <form method="POST">
-                                {% csrf_token %} {{step3_form|crispy}}
-                                <input type="submit" value="Next" class="btn" />
-                                <input type="hidden" value="step3" name="step" />
-                            </form>
-                        </div>
-                        <div class="col s12 m6">
-                            <div id="drop-map" class="drop-map"></div>
-                            <div id="drop-infowindow-content">
-                                <span id="drop-place-name" class="title"></span><br />
-                                <span id="drop-place-address"></span>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col s12 m6">
+                                <form method="POST">
+                                    {% csrf_token %} {{step3_form|crispy}}
+                                    <input type="submit" value="Next" class="btn black" />
+                                    <input type="hidden" value="step3" name="step" />
+                                </form>
+                            </div>
+                            <div class="col s12 m6">
+                                <div id="drop-map" class="drop-map"></div>
+                                <div id="drop-infowindow-content">
+                                    <span id="drop-place-name" class="title"></span><br />
+                                    <span id="drop-place-address"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,7 +159,24 @@
             </div>
 
             {% comment %} step4 {% endcomment %}
-            <div id="payment" class="col s12">Payment Details</div>
+            <div id="payment" class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                    
+                        <form method="POST">
+                            {% csrf_token %}
+                            <label for="card-last4">Card</label>
+                            <input id="card-last4" type="text" value="*** *** ****{{customer.stripe_card_last}}" disabled>
+
+                            <label for="price">Price</label>
+                            <input id="price" type="text" value="Rs. {{job.pricing}}" disabled>
+                            <input type="hidden" name="step" value="step4">
+                            <input type="submit" value="Pay Now" class="btn black">
+
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -218,7 +269,7 @@
 
             marker.setPosition(place.geometry.location);
             marker.setVisible(true);
-            
+
             infowindowContent.children[`${type}-place-name`].textContent = place.name;
             infowindowContent.children[`${type}-place-address`].textContent =
                 place.formatted_address;
@@ -233,7 +284,8 @@
             $(`#id_${type}_lat`).val(place_lat)
         });
     }
-    function initMap(){
+
+    function initMap() {
         console.log("hello");
         const pickupLat = parseFloat("{{job.pickup_lat}}")
         const pickupLng = parseFloat("{{job.pickup_lng}}")
@@ -247,8 +299,7 @@
 </script>
 
 
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key={{google_maps_api_key}}&libraries=places&callback=initMap"
     async>
 </script>
 

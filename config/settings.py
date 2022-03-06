@@ -144,7 +144,7 @@ DEFAULT_FROM_EMAIL = "Fast Parcel <notifier.it.bitd@noreply.com"
 
 FIREBASE_ADMIN_CONFIG = os.path.join(BASE_DIR, "fastparcel-e8446-firebase-adminsdk-fyxb3-e82fd3b5e5.json")
 
-GOOGLE_MAPS_API_KEY = "AIzaSyANYhckKG7-0AcKmSB_Xc1MYWN-X6rVTEg"
+GOOGLE_MAPS_API_KEY = "AIzaSyDvxDZnFAVipsvLfmfgx6ZvVWqwd7w1hkU"
 
 STRIPE_API_PUBLIC_KEY = "pk_test_51HUq9QFgv9HUgZUthzVgOpBfu4RABpQTii5ICcGKdmJHsQCLugiHEtGj53SoaDAgbDEIQ6NJlYWjUSAisevNMuUc00224e8amH"
 STRIPE_API_SECRET_KEY = "sk_test_51HUq9QFgv9HUgZUtMm92sWky63CTDgjDDZWqwua4DZGHj1c5pRTicgLsAmaTa9NGuNKnEYi3aN6Id4x89amjBj0A00MXmdHWJa"
