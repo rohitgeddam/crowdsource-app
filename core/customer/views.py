@@ -8,7 +8,7 @@ from django.contrib.auth import update_session_auth_hash
 from core.models import Customer, Job
 
 
-from .forms import JobCreateStep2, UserModifyForm, CustomerModifyForm, JobCreateStep1
+from .forms import JobCreateStep2, JobCreateStep3, UserModifyForm, CustomerModifyForm, JobCreateStep1
 
 import firebase_admin
 from firebase_admin import credentials, auth
@@ -138,6 +138,7 @@ def create_job(request):
     
     job_create_step1 = JobCreateStep1(instance=current_job)
     job_create_step2 = JobCreateStep2(instance=current_job)
+    job_create_step3 = JobCreateStep3(instance=current_job)
 
     if request.method == "POST":
         step = request.POST.get("step")
@@ -171,11 +172,26 @@ def create_job(request):
             else:
                 print("invalid")
                 job_create_step2 = JobCreateStep2(request.POST)
+        
+        if step == "step3":
+            print(request.POST)
+            step3_form  = JobCreateStep3(request.POST, instance=current_job)
+            
+            if(step3_form.is_valid()):
+                job = step3_form.save(commit=False)
+                job.status='payment'
+                job.save()
+                return redirect(reverse("customer:create_job"))
+            else:
+                print("invalid")
+                job_create_step3 = JobCreateStep3(request.POST)
+            
     
 
     return render(request, "customer/create_job.html", {
         "step1_form": job_create_step1,
         "step2_form": job_create_step2,
+        "step3_form": job_create_step3,
         "job": current_job,
         "current_step": current_step
     })

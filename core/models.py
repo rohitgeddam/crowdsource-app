@@ -74,8 +74,11 @@ class Job(models.Model):
     pickup_phone = models.CharField(max_length=20)
     
     
+    drop_address = models.CharField(max_length=256)
+    drop_name = models.CharField(max_length=255)
     drop_lat = models.FloatField(blank=True, null=True)
     drop_lng = models.FloatField(blank=True, null=True)
+    drop_phone = models.CharField(max_length=20)
     
 
     def __str__(self):

@@ -18,8 +18,7 @@ class CustomerModifyForm(forms.ModelForm):
 class JobCreateStep1(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ("quantity", "image", "category", "description")
-        
+        fields = ("quantity", "image", "category", "description"    )
         
         
 # validation phone_number
@@ -45,3 +44,18 @@ class JobCreateStep2(forms.ModelForm):
         # print(self.fields)
         self.fields["pickup_lat"].widget = forms.HiddenInput()
         self.fields["pickup_lng"].widget = forms.HiddenInput()
+
+class JobCreateStep3(forms.ModelForm):
+    drop_address = forms.CharField(required=True)
+    drop_name = forms.CharField(required=True)
+    drop_phone = forms.CharField(required=True, validators=[validate_phone_number])
+
+    class Meta:
+        model = Job
+        fields = ("drop_address", "drop_name", "drop_lat", "drop_lng", "drop_phone")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # print(self.fields)
+        self.fields["drop_lat"].widget = forms.HiddenInput()
+        self.fields["drop_lng"].widget = forms.HiddenInput()
